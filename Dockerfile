@@ -1,6 +1,5 @@
 FROM python:3.12-slim
 
-# Chromium 依赖
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
     libcups2 libdrm2 libdbus-1-3 libxcb1 libxkbcommon0 libx11-6 \
@@ -12,12 +11,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir flask pillow pyyaml playwright
 
 RUN python -m playwright install chromium
 RUN python -m playwright install-deps chromium
 
 COPY . .
+
+# 预热 Chromium，避免第一次请求时下载/初始化超时
+RUN python -c "from playwright.sync_api import sync_playwright; \
+    p = sync_playwright().start(); \
+    browser = p.chromium.launch(headless=True); \
+    browser.close(); \
+    p.stop()"
 
 ENV HOST=0.0.0.0
 ENV PORT=8080
