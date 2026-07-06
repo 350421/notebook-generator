@@ -325,3 +325,4 @@ def parse_markdown(markdown_text: str) -> list[Block]:
 
     flush_pending()
     return blocks
+
