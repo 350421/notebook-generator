@@ -1,0 +1,13 @@
+{
+  "name": "复古纸质",
+  "background": "#D8BE91",
+  "title_color": "#4A2E1D",
+  "title_font": "\"思源黑体\", \"Source Han Sans\", \"微软雅黑\", \"Microsoft YaHei\", sans-serif",
+  "title_size": 64,
+  "body_color": "#513725",
+  "body_font": "\"思源黑体\", \"Source Han Sans\", \"微软雅黑\", \"Microsoft YaHei\", sans-serif",
+  "body_size": 32,
+  "line_height": 1.8,
+  "padding": 96,
+  "accent_color": "#A63228"
+}

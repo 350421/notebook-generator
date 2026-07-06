@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080, initial-scale=1">
+  <title>高级灰调</title>
+  <style>
+    .theme-06 .note{background:linear-gradient(135deg,rgba(255,255,255,.5),transparent 38%),#E8E8E8}
+    .theme-06 .topbar{color:#111;letter-spacing:.28em}
+    .theme-06 .block-title{padding-bottom:24px;border-bottom:10px solid #111}
+    .theme-06 .block-subtitle{min-height:72px;padding:12px 18px 12px 84px;background:#D7D7D7;line-height:1.35}
+    .theme-06 .block-subtitle::before{display:none}
+    .theme-06 .block-subtitle::after{top:50%;left:14px;transform:translateY(-50%)}
+    .theme-06 .block-list li::before{border-radius:0;background:#111;color:#FFF}
+    .theme-06 .footer{color:#666}
+  </style>
+</head>
+<body class="theme-06">
+  <main class="note">
+    <div class="topbar">{{ header_label }}</div>
+    <section class="markdown-content" data-render-slot="content"><div class="content-block"><h1 class="block-title">高级灰调</h1></div></section>
+    <footer class="footer"><span>{{ footer_subtitle }}</span><span class="page-number" data-render-slot="page-number">01</span></footer>
+  </main>
+</body>
+</html>

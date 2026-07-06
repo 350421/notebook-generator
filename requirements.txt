@@ -1,0 +1,8 @@
+playwright
+paddleocr
+paddlepaddle
+requests
+beautifulsoup4
+pillow
+pyyaml
+flask

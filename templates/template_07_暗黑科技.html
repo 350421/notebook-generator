@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080, initial-scale=1">
+  <title>暗黑科技</title>
+  <style>
+    .theme-07 .note{background:linear-gradient(rgba(95,231,242,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(95,231,242,.055) 1px,transparent 1px),radial-gradient(circle at 86% 8%,#103B50,transparent 300px),#071426;background-size:44px 44px,44px 44px,auto,auto}
+    .theme-07 .topbar{color:#5FE7F2;text-shadow:0 0 12px rgba(95,231,242,.6)}
+    .theme-07 .block-title{color:#FFF;text-shadow:0 0 22px rgba(95,231,242,.35)}
+    .theme-07 .block-subtitle{color:#5FE7F2}
+    .theme-07 .block-subtitle::before{box-shadow:0 0 12px #5FE7F2;background:#FFF}
+    .theme-07 .block-list li::before{border:1px solid #5FE7F2;background:#0B2136;color:#FFF;box-shadow:0 0 10px rgba(95,231,242,.25)}
+  </style>
+</head>
+<body class="theme-07">
+  <main class="note">
+    <div class="topbar">{{ header_label }}</div>
+    <section class="markdown-content" data-render-slot="content"><div class="content-block"><h1 class="block-title">暗黑科技</h1></div></section>
+    <footer class="footer"><span>{{ footer_subtitle }}</span><span class="page-number" data-render-slot="page-number">01</span></footer>
+  </main>
+</body>
+</html>

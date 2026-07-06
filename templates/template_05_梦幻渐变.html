@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080, initial-scale=1">
+  <title>梦幻渐变</title>
+  <style>
+    .theme-05 .note{background:radial-gradient(circle at 82% 10%,rgba(255,255,255,.24),transparent 240px),linear-gradient(145deg,#7655E9,#CD66B6 54%,#EF928D)}
+    .theme-05 .note::after{position:absolute;inset:32px;border:1px solid rgba(255,255,255,.28);border-radius:28px;content:"";pointer-events:none}
+    .theme-05 .topbar{color:#FFD76A;text-shadow:0 2px 12px rgba(0,0,0,.18)}
+    .theme-05 .block-title,.theme-05 .block-subtitle{text-shadow:0 3px 18px rgba(72,31,112,.25)}
+    .theme-05 .block-list li{margin-bottom:8px;border:1px solid rgba(255,255,255,.18);border-radius:16px;background:rgba(255,255,255,.09);backdrop-filter:blur(8px)}
+    .theme-05 .block-list li::before{background:rgba(255,215,106,.18)}
+  </style>
+</head>
+<body class="theme-05">
+  <main class="note">
+    <div class="topbar">{{ header_label }}</div>
+    <section class="markdown-content" data-render-slot="content"><div class="content-block"><h1 class="block-title">梦幻渐变</h1></div></section>
+    <footer class="footer"><span>{{ footer_subtitle }}</span><span class="page-number" data-render-slot="page-number">01</span></footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080, initial-scale=1">
+  <title>极简白底</title>
+  <style>
+    .theme-01 .note {
+      background: #FFFFFF;
+    }
+
+    .theme-01 .note::after {
+      position: absolute;
+      top: 102px;
+      right: 96px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #D9363E;
+      content: "";
+    }
+
+    .theme-01 .topbar {
+      padding: 8px 16px;
+      border-radius: 12px;
+      background: #FFE8E8;
+      color: #D9363E;
+      font-size: 22px;
+      letter-spacing: .04em;
+    }
+
+    .theme-01 .block-title {
+      color: #1A1A1A;
+      font-size: 64px;
+      font-weight: 700;
+    }
+
+    .theme-01 .subtitle,
+    .theme-01 .block-subtitle {
+      color: #333333;
+      font-size: 36px;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    .theme-01 .block-subtitle::before {
+      background: #D9363E;
+    }
+
+    .theme-01 .block-subtitle::after,
+    .theme-01 .block-list li::before {
+      background: #FFF0F0;
+      color: #D9363E;
+    }
+
+    .theme-01 .block-body,
+    .theme-01 .block-list li {
+      color: #4A4A4A;
+      font-size: 32px;
+    }
+
+    .theme-01 .block-body {
+      margin-top: 24px;
+    }
+
+    .theme-01 .footer {
+      color: #999999;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body class="theme-01">
+  <main class="note">
+    <div class="topbar">{{ header_label }}</div>
+    <section class="markdown-content" data-render-slot="content">
+      <div class="content-block"><h1 class="block-title">图文笔记标题</h1></div>
+    </section>
+    <footer class="footer">
+      <span>{{ footer_subtitle }}</span>
+      <span class="page-number" data-render-slot="page-number">01</span>
+    </footer>
+  </main>
+</body>
+</html>

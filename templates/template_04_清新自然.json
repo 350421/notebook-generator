@@ -1,0 +1,13 @@
+{
+  "name": "清新自然",
+  "background": "#EAF3E8",
+  "title_color": "#234D36",
+  "title_font": "\"思源黑体\", \"Source Han Sans\", \"微软雅黑\", \"Microsoft YaHei\", sans-serif",
+  "title_size": 64,
+  "body_color": "#355C46",
+  "body_font": "\"思源黑体\", \"Source Han Sans\", \"微软雅黑\", \"Microsoft YaHei\", sans-serif",
+  "body_size": 32,
+  "line_height": 1.8,
+  "padding": 96,
+  "accent_color": "#9B7653"
+}

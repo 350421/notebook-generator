@@ -1,0 +1,13 @@
+image:
+  width: 1080
+  height: 1440
+  aspect_ratio: "3:4"
+
+ocr:
+  engine: "paddleocr"
+
+output:
+  directory: "output"
+
+templates:
+  count: 10

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080, initial-scale=1">
+  <title>黑金商务</title>
+  <style>
+    .theme-02 .note{background:#0A0A0A}
+    .theme-02 .note::after{position:absolute;inset:28px;border:1px solid rgba(217,184,108,.28);content:"";pointer-events:none}
+    .theme-02 .topbar{padding:9px 18px;border:1px solid #D9B86C;letter-spacing:.22em}
+    .theme-02 .topbar::before{display:none}
+    .theme-02 .block-title{text-transform:uppercase;text-shadow:0 2px 18px rgba(217,184,108,.15)}
+    .theme-02 .block-subtitle{border-bottom:1px solid rgba(217,184,108,.35);padding-bottom:12px}
+    .theme-02 .block-subtitle::after,.theme-02 .block-list li::before{border:2px solid #D4AF37;background:transparent;color:#D4AF37}
+  </style>
+</head>
+<body class="theme-02">
+  <main class="note">
+    <div class="topbar">{{ header_label }}</div>
+    <section class="markdown-content" data-render-slot="content"><div class="content-block"><h1 class="block-title">黑金商务</h1></div></section>
+    <footer class="footer"><span>{{ footer_subtitle }}</span><span class="page-number" data-render-slot="page-number">01</span></footer>
+  </main>
+</body>
+</html>

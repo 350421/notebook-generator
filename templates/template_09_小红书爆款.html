@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080, initial-scale=1">
+  <title>小红书爆款</title>
+  <style>
+    .theme-09 .note{background:radial-gradient(circle at 92% 5%,rgba(244,196,48,.24),transparent 250px),#FFF}
+    .theme-09 .topbar{color:#E83B46;font-family:"KaiTi","STKaiti",sans-serif;font-size:26px;transform:rotate(-1deg)}
+    .theme-09 .topbar::before{background:#E83B46}
+    .theme-09 .block-title{display:inline;background:linear-gradient(transparent 63%,rgba(244,196,48,.82) 63%);line-height:1.38;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+    .theme-09 .block-subtitle{display:table;min-height:68px;padding:8px 16px 8px 84px;background:#F4C430;line-height:1.35;transform:rotate(-.4deg)}
+    .theme-09 .block-subtitle::before{display:none}
+    .theme-09 .block-subtitle::after{top:50%;left:14px;transform:translateY(-50%)}
+    .theme-09 .block-list{border:0}
+    .theme-09 .block-list li{margin-bottom:10px;border:2px solid #222;border-radius:16px;box-shadow:5px 5px 0 #F4C430}
+    .theme-09 .block-list li::before{background:#F4C430;color:#1F1F1F}
+  </style>
+</head>
+<body class="theme-09">
+  <main class="note">
+    <div class="topbar">{{ header_label }}</div>
+    <section class="markdown-content" data-render-slot="content"><div class="content-block"><h1 class="block-title">小红书爆款</h1></div></section>
+    <footer class="footer"><span>{{ footer_subtitle }}</span><span class="page-number" data-render-slot="page-number">01</span></footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080, initial-scale=1">
+  <title>温暖奶茶</title>
+  <style>
+    .theme-03 .note{background:radial-gradient(circle at 88% 7%,rgba(217,120,66,.18),transparent 270px),#F6EBDD}
+    .theme-03 .topbar{padding:8px 20px;border-radius:999px;background:#FFF8F0}
+    .theme-03 .block-title{letter-spacing:.03em}
+    .theme-03 .block-subtitle{padding-left:90px}
+    .theme-03 .block-subtitle::before{width:10px;border-radius:10px}
+    .theme-03 .block-list{border:0}
+    .theme-03 .block-list li{margin-bottom:12px;border:0;border-radius:18px;background:rgba(255,255,255,.48)}
+    .theme-03 .footer{padding-top:12px;border-top:1px dashed rgba(90,57,43,.28)}
+  </style>
+</head>
+<body class="theme-03">
+  <main class="note">
+    <div class="topbar">{{ header_label }}</div>
+    <section class="markdown-content" data-render-slot="content"><div class="content-block"><h1 class="block-title">温暖奶茶</h1></div></section>
+    <footer class="footer"><span>{{ footer_subtitle }}</span><span class="page-number" data-render-slot="page-number">01</span></footer>
+  </main>
+</body>
+</html>

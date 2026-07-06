@@ -1,0 +1,13 @@
+{
+  "name": "杂志风",
+  "background": "#FFFFFF",
+  "title_color": "#111111",
+  "title_font": "\"思源黑体\", \"Source Han Sans\", \"微软雅黑\", \"Microsoft YaHei\", sans-serif",
+  "title_size": 64,
+  "body_color": "#666666",
+  "body_font": "\"思源黑体\", \"Source Han Sans\", \"微软雅黑\", \"Microsoft YaHei\", sans-serif",
+  "body_size": 32,
+  "line_height": 1.8,
+  "padding": 96,
+  "accent_color": "#D94B3D"
+}

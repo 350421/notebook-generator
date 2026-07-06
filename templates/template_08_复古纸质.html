@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080, initial-scale=1">
+  <title>复古纸质</title>
+  <style>
+    .theme-08 .note{background:repeating-linear-gradient(0deg,rgba(79,47,28,.035) 0,rgba(79,47,28,.035) 1px,transparent 1px,transparent 6px),radial-gradient(circle at 20% 10%,rgba(255,255,255,.24),transparent 350px),#D8BE91}
+    .theme-08 .note::after{position:absolute;inset:30px;border:2px solid rgba(74,46,29,.28);content:"";pointer-events:none}
+    .theme-08 .topbar{padding:9px 14px;border:3px solid #A63228;color:#A63228;letter-spacing:.08em;transform:rotate(-2deg)}
+    .theme-08 .topbar::before{display:none}
+    .theme-08 .block-title{border-bottom:2px solid rgba(74,46,29,.45);padding-bottom:20px}
+    .theme-08 .block-list li::before{border:2px solid #A63228;border-radius:50%;background:transparent;color:#A63228}
+    .theme-08 .footer{font-family:"SimSun",serif}
+  </style>
+</head>
+<body class="theme-08">
+  <main class="note">
+    <div class="topbar">{{ header_label }}</div>
+    <section class="markdown-content" data-render-slot="content"><div class="content-block"><h1 class="block-title">复古纸质</h1></div></section>
+    <footer class="footer"><span>{{ footer_subtitle }}</span><span class="page-number" data-render-slot="page-number">01</span></footer>
+  </main>
+</body>
+</html>

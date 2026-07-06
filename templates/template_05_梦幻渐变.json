@@ -1,0 +1,13 @@
+{
+  "name": "梦幻渐变",
+  "background": "linear-gradient(145deg, #8A5CF6 0%, #D96CB5 52%, #F29B91 100%)",
+  "title_color": "#FFFFFF",
+  "title_font": "\"思源黑体\", \"Source Han Sans\", \"微软雅黑\", \"Microsoft YaHei\", sans-serif",
+  "title_size": 64,
+  "body_color": "#FFFFFF",
+  "body_font": "\"思源黑体\", \"Source Han Sans\", \"微软雅黑\", \"Microsoft YaHei\", sans-serif",
+  "body_size": 32,
+  "line_height": 1.8,
+  "padding": 96,
+  "accent_color": "#FFD76A"
+}

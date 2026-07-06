@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#D9363E">
+  <title>图文笔记批量生成器</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=20260706g">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="brand-mark" aria-hidden="true">记</div>
+      <div>
+        <span class="eyebrow">免费 · 无需登录 · 打开即用</span>
+        <h1>图文笔记批量生成器</h1>
+        <p>先预览、再微调，满意后一次生成 10 套小红书图文笔记。</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="composer" aria-labelledby="composer-title">
+        <div class="section-heading">
+          <div>
+            <span class="step">01</span>
+            <h2 id="composer-title">输入笔记内容</h2>
+          </div>
+          <span id="char-count" class="char-count">0 字</span>
+        </div>
+
+        <form id="generate-form">
+          <label class="sr-only" for="content">笔记内容</label>
+          <textarea
+            id="content"
+            name="content"
+            placeholder="在这里粘贴你的笔记内容..."
+            spellcheck="false"
+          ></textarea>
+
+          <details id="template-text-panel" class="template-text-panel">
+            <summary>
+              <span>模板固定文字（可选）</span>
+              <small>顶部标签和底部副标题</small>
+            </summary>
+            <div class="template-text-panel-body">
+              <div id="template-text-fields" class="template-text-fields"></div>
+              <div class="template-text-actions">
+                <button
+                  id="reset-template-text"
+                  class="secondary-button compact-button"
+                  type="button"
+                >
+                  重置为默认
+                </button>
+                <button
+                  id="apply-template-text"
+                  class="secondary-button compact-button"
+                  type="button"
+                >
+                  应用到所有模板
+                </button>
+              </div>
+              <p id="template-text-hint" class="template-text-hint">
+                “应用到所有模板”会把最后聚焦输入框的内容批量填入同一位置。
+              </p>
+            </div>
+          </details>
+
+          <details id="template-style-panel" class="template-text-panel">
+            <summary>
+              <span>模板参数（必补）</span>
+              <small>底色 / 主色 / 字号 / 行距 / 圆角</small>
+            </summary>
+            <div class="template-text-panel-body">
+              <div class="template-style-actions">
+                <button
+                  id="apply-template-style"
+                  class="secondary-button compact-button"
+                  type="button"
+                >
+                  当前参数应用到全部模板
+                </button>
+                <button
+                  id="reset-template-style"
+                  class="secondary-button compact-button"
+                  type="button"
+                >
+                  恢复当前模板默认
+                </button>
+              </div>
+              <label class="template-style-template-picker">
+                <span>当前编辑模板</span>
+                <select id="template-style-template-select"></select>
+              </label>
+              <div id="template-style-fields" class="template-style-fields"></div>
+              <p id="template-style-hint" class="template-text-hint">
+                改完参数后，预览会自动同步到对应模板。
+              </p>
+            </div>
+          </details>
+
+          <details id="cover-settings-panel" class="template-text-panel">
+            <summary>
+              <span>封面控制（必补）</span>
+              <small>独立第一页 / 封面副标题 / 封面图优先</small>
+            </summary>
+            <div class="template-text-panel-body">
+              <div class="cover-settings-grid">
+                <label class="toggle-row">
+                  <input id="cover-enabled" type="checkbox">
+                  <span>启用封面模式</span>
+                </label>
+                <label class="toggle-row">
+                  <input id="cover-separate-page" type="checkbox">
+                  <span>封面独立第一页</span>
+                </label>
+                <label class="toggle-row">
+                  <input id="cover-prefer-image" type="checkbox" checked>
+                  <span>优先使用封面图</span>
+                </label>
+                <label class="cover-subtitle-field">
+                  <span>封面副标题</span>
+                  <input
+                    id="cover-subtitle"
+                    type="text"
+                    maxlength="120"
+                    placeholder="比如：轻资产、高利润、自媒体变现思路"
+                  >
+                </label>
+              </div>
+              <p class="template-text-hint">
+                不开“封面独立第一页”也会优先把主标题、封面副标题和第一张可用图片整理成首页封面效果。
+              </p>
+            </div>
+          </details>
+
+          <details id="image-upload-panel" class="template-text-panel image-upload-panel">
+            <summary>
+              <span>上传图片</span>
+              <small>jpg / png / gif / webp，单张不超过 5MB</small>
+            </summary>
+            <div class="template-text-panel-body">
+              <div class="upload-controls">
+                <label class="secondary-button compact-button file-picker-button">
+                  选择图片
+                  <input id="image-file-input" type="file" accept="image/jpeg,image/png,image/gif,image/webp">
+                </label>
+                <button
+                  id="upload-image-button"
+                  class="secondary-button compact-button"
+                  type="button"
+                  disabled
+                >
+                  上传
+                </button>
+              </div>
+
+              <div id="pending-image" class="pending-image" hidden>
+                <img id="pending-image-thumb" src="" alt="待上传图片预览">
+                <span id="pending-image-name"></span>
+              </div>
+
+              <div class="uploaded-heading">
+                <strong>已上传</strong>
+                <span id="uploaded-image-count">0 张</span>
+              </div>
+              <div id="uploaded-image-list" class="uploaded-image-list">
+                <p class="upload-empty">还没有上传图片。</p>
+              </div>
+              <p class="template-text-hint">
+                先生成预览，再点击任意页面下方的“在此页插入图片”。
+              </p>
+            </div>
+          </details>
+
+          <details id="project-panel" class="template-text-panel">
+            <summary>
+              <span>项目保存（必补）</span>
+              <small>保存 / 继续编辑 / 导入导出 JSON</small>
+            </summary>
+            <div class="template-text-panel-body">
+              <div class="project-actions">
+                <input
+                  id="project-name-input"
+                  class="template-text-input"
+                  type="text"
+                  maxlength="80"
+                  placeholder="项目名，例如：开窍搞钱-矩阵版"
+                >
+                <button id="save-project-button" class="secondary-button compact-button" type="button">
+                  保存当前项目
+                </button>
+                <button id="export-project-button" class="secondary-button compact-button" type="button">
+                  导出项目 JSON
+                </button>
+                <label class="secondary-button compact-button file-picker-button">
+                  导入项目 JSON
+                  <input id="import-project-input" type="file" accept="application/json,.json">
+                </label>
+              </div>
+              <div id="project-history-list" class="project-history-list">
+                <p class="upload-empty">还没有保存过项目。</p>
+              </div>
+            </div>
+          </details>
+
+          <details id="material-panel" class="template-text-panel image-upload-panel">
+            <summary>
+              <span>素材元素</span>
+              <small>装饰图标可换颜色</small>
+            </summary>
+            <div class="template-text-panel-body">
+              <div id="material-preset-list" class="material-preset-list">
+                <button type="button" class="material-preset-button" data-material="sparkle">星芒</button>
+                <button type="button" class="material-preset-button" data-material="heart">爱心</button>
+                <button type="button" class="material-preset-button" data-material="star">五角星</button>
+                <button type="button" class="material-preset-button" data-material="quote">引号</button>
+                <button type="button" class="material-preset-button" data-material="check">对勾</button>
+                <button type="button" class="material-preset-button" data-material="bolt">闪电</button>
+              </div>
+              <p class="template-text-hint">
+                先生成预览后再插入；插入后可在左侧内容块里修改图标颜色和位置。
+              </p>
+            </div>
+          </details>
+
+          <button id="generate-button" class="primary-button" type="submit">
+            <span class="button-icon" aria-hidden="true">✦</span>
+            <span class="button-label">生成预览</span>
+          </button>
+
+          <div class="composer-actions">
+            <button
+              id="undo-button"
+              class="secondary-button compact-button"
+              type="button"
+              disabled
+            >
+              撤销
+            </button>
+            <button
+              id="redo-button"
+              class="secondary-button compact-button"
+              type="button"
+              disabled
+            >
+              重做
+            </button>
+            <button
+              id="clear-draft-button"
+              class="secondary-button compact-button"
+              type="button"
+            >
+              清空草稿
+            </button>
+          </div>
+        </form>
+
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+      </section>
+
+      <section id="results" class="results" aria-labelledby="results-title" hidden>
+        <div class="section-heading results-heading">
+          <div>
+            <span class="step">02</span>
+            <h2 id="results-title">微调预览</h2>
+          </div>
+        </div>
+        <p id="result-summary" class="result-summary"></p>
+
+        <div
+          id="inline-format-toolbar"
+          class="inline-format-toolbar"
+          role="toolbar"
+          aria-label="选中文字格式"
+          hidden
+        >
+          <button
+            id="format-bold"
+            class="format-tool-button"
+            type="button"
+            aria-pressed="false"
+            title="切换加粗"
+          >
+            <strong>B</strong>
+            <span>加粗</span>
+          </button>
+
+          <div class="format-popover-wrap">
+            <button
+              id="format-color-toggle"
+              class="format-tool-button"
+              type="button"
+              aria-expanded="false"
+              aria-controls="format-color-panel"
+            >
+              <strong class="color-tool-icon">A</strong>
+              <span>颜色</span>
+              <i>▾</i>
+            </button>
+            <div
+              id="format-color-panel"
+              class="format-color-panel"
+              aria-label="文字颜色"
+              hidden
+            >
+              <button type="button" data-color="#D9363E" style="--swatch:#D9363E" aria-label="小红书红"></button>
+              <button type="button" data-color="#1677FF" style="--swatch:#1677FF" aria-label="品牌蓝"></button>
+              <button type="button" data-color="#00B42A" style="--swatch:#00B42A" aria-label="成功绿"></button>
+              <button type="button" data-color="#FF9500" style="--swatch:#FF9500" aria-label="警告橙"></button>
+              <button type="button" data-color="#722ED1" style="--swatch:#722ED1" aria-label="强调紫"></button>
+              <button type="button" data-color="#1A1A1A" style="--swatch:#1A1A1A" aria-label="深黑"></button>
+              <button type="button" data-color="#FFFFFF" style="--swatch:#FFFFFF" aria-label="白色"></button>
+              <button type="button" data-color="#8C6E4A" style="--swatch:#8C6E4A" aria-label="奶茶棕"></button>
+              <label class="custom-color-control">
+                <span>自定义</span>
+                <input id="format-custom-color" type="color" value="#D9363E" aria-label="自定义文字颜色">
+              </label>
+            </div>
+          </div>
+
+          <label class="format-size-control">
+            <span class="sr-only">文字字号</span>
+            <select id="format-font-size" aria-label="文字字号">
+              <option value="">字号</option>
+              <option value="16">16 px</option>
+              <option value="20">20 px</option>
+              <option value="24">24 px</option>
+              <option value="28">28 px</option>
+              <option value="32">32 px</option>
+              <option value="36">36 px</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="edit-workspace">
+          <div class="editor-panel">
+            <div class="panel-title">
+              <strong>可编辑内容</strong>
+              <span>选中文字可加粗、改色、改字号 · ↑↓ 排序</span>
+            </div>
+            <div id="block-editor" class="block-editor"></div>
+          </div>
+
+          <aside class="preview-panel">
+            <div class="panel-title">
+              <strong>10 套模板预览</strong>
+              <span>点击图片放大</span>
+            </div>
+            <div id="preview-gallery" class="preview-gallery"></div>
+          </aside>
+        </div>
+
+        <div class="edit-actions">
+          <button id="refresh-button" class="secondary-button" type="button">
+            重新生成预览
+          </button>
+        </div>
+
+        <div class="download-actions">
+          <button
+            id="download-selected-button"
+            class="download-button final-button"
+            type="button"
+          >
+            下载选中模板 (10/10)
+          </button>
+          <button
+            id="download-all-button"
+            class="secondary-button final-button"
+            type="button"
+          >
+            下载全部 10 套
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>10 套模板</span>
+      <i aria-hidden="true"></i>
+      <span>自动分页</span>
+      <i aria-hidden="true"></i>
+      <span>一键打包</span>
+    </footer>
+  </div>
+
+  <div
+    id="image-modal"
+    class="image-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-label="图片预览"
+    hidden
+  >
+    <button id="modal-close" class="modal-close" type="button">✕ 关闭</button>
+    <figure class="modal-figure">
+      <img id="modal-image" src="" alt="">
+      <figcaption id="modal-caption"></figcaption>
+    </figure>
+  </div>
+
+  <div
+    id="image-picker-modal"
+    class="image-picker-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="image-picker-title"
+    hidden
+  >
+    <section class="image-picker-dialog">
+      <div class="image-picker-heading">
+        <div>
+          <h2 id="image-picker-title">选择要插入的图片</h2>
+          <p id="image-picker-target"></p>
+        </div>
+        <button id="image-picker-close" type="button">✕ 关闭</button>
+      </div>
+      <div id="image-picker-list" class="image-picker-list"></div>
+    </section>
+  </div>
+
+  <script id="template-text-defaults" type="application/json">{{ template_text_defaults | tojson }}</script>
+  <script id="template-style-defaults" type="application/json">{{ template_style_defaults | tojson }}</script>
+  <script src="{{ url_for('static', filename='script.js') }}?v=20260706g"></script>
+</body>
+</html>

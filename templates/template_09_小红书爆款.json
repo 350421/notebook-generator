@@ -1,0 +1,13 @@
+{
+  "name": "小红书爆款",
+  "background": "#FFFFFF",
+  "title_color": "#1F1F1F",
+  "title_font": "\"楷体\", \"KaiTi\", \"STKaiti\", \"微软雅黑\", \"Microsoft YaHei\", sans-serif",
+  "title_size": 64,
+  "body_color": "#333333",
+  "body_font": "\"思源黑体\", \"Source Han Sans\", \"微软雅黑\", \"Microsoft YaHei\", sans-serif",
+  "body_size": 32,
+  "line_height": 1.8,
+  "padding": 96,
+  "accent_color": "#F4C430"
+}
