@@ -189,6 +189,22 @@ def parse_markdown(markdown_text: str) -> list[Block]:
                     for line in pending_lines
                     if line.strip()
                 )
+            elif pending_type == "body":
+                # 长正文按自然段自动拆分，避免单段过长导致分页失败
+                combined = "\n".join(pending_lines).strip()
+                if len(combined) > 300:
+                    parts = re.split(r"(?<=[。！？])", combined)
+                    chunk = ""
+                    for part in parts:
+                        if len(chunk) + len(part) > 280 and chunk:
+                            blocks.append({"type": "body", "content": chunk.strip()})
+                            chunk = part
+                        else:
+                            chunk += part
+                    if chunk.strip():
+                        blocks.append({"type": "body", "content": chunk.strip()})
+                else:
+                    blocks.append({"type": "body", "content": combined})
             else:
                 blocks.append(
                     {
