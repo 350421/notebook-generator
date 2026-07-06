@@ -598,5 +598,15 @@ def download_zip():
     )
 
 
+@app.errorhandler(500)
+def internal_error(_error):
+    return jsonify({"success": False, "error": "服务器内部错误，请稍后重试"}), 500
+
+
+@app.errorhandler(404)
+def not_found(_error):
+    return jsonify({"success": False, "error": "接口不存在"}), 404
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)

@@ -820,6 +820,71 @@ def _split_long_lists(
     return new_blocks, new_indices
 
 
+def _split_oversized_blocks(
+    blocks: list[dict[str, str]],
+    source_indices: list[int],
+    available_height: float,
+    page: Any,
+    template_html: str,
+    style: dict[str, Any],
+    body_size: int,
+    document_title: str,
+    template_text: dict[str, str],
+) -> tuple[list[dict[str, str]], list[int]] | None:
+    """将 body 块按字符数估算拆分，避免单块过高。"""
+    # 粗略估算：每字符约占 1.2px 行高（36px 字号 × 1.45 行距推算）
+    max_chars = max(40, int(available_height / 1.6))
+    new_blocks: list[dict[str, str]] = []
+    new_indices: list[int] = []
+    changed = False
+
+    for idx, block in enumerate(blocks):
+        if block.get("type") != "body":
+            new_blocks.append(block)
+            new_indices.append(source_indices[idx])
+            continue
+
+        content = str(block.get("content", ""))
+        if len(content) <= max_chars:
+            new_blocks.append(block)
+            new_indices.append(source_indices[idx])
+            continue
+
+        # 按句号拆分
+        parts = re.split(r"(?<=[。！？…])", content)
+        parts = [p for p in parts if p.strip()]
+        if len(parts) <= 1:
+            parts = re.split(r"(?<=[；;，、,])", content)
+            parts = [p for p in parts if p.strip()]
+        if len(parts) <= 1:
+            step = max(30, int(max_chars * 0.7))
+            parts = [content[i:i + step] for i in range(0, len(content), step)]
+
+        chunks = []
+        buf = ""
+        for part in parts:
+            if len(buf) + len(part) > max_chars and buf:
+                chunks.append(buf.strip())
+                buf = part
+            else:
+                buf += part
+        if buf.strip():
+            chunks.append(buf.strip())
+
+        if len(chunks) > 1:
+            changed = True
+            for chunk in chunks:
+                sub = dict(block)
+                sub["content"] = chunk
+                new_blocks.append(sub)
+                new_indices.append(source_indices[idx])
+        else:
+            new_blocks.append(block)
+            new_indices.append(source_indices[idx])
+
+    return (new_blocks, new_indices) if changed else None
+
+
 def _paginate(
     blocks: list[dict[str, str]],
     heights: list[float],
@@ -1014,26 +1079,46 @@ def render_template(
                         break
 
             if selected_size is None:
-                # 尝试给出具体哪个块导致的失败
-                oversized_details: list[str] = []
-                try:
-                    for i, (block, h) in enumerate(zip(paginated_blocks, block_heights)):
-                        if h > available_height:
-                            oversized_details.append(
-                                f"「{_block_summary(block, limit=28)}」({h:.0f}px)"
-                            )
-                except Exception:
-                    oversized_details = []
-                if oversized_details:
-                    detail = "；".join(oversized_details[:3])
-                    suffix = " 等" if len(oversized_details) > 3 else ""
-                    raise RuntimeError(
-                        f"以下内容块超过单页可用高度（{available_height:.0f}px），"
-                        f"请将其拆成多个自然段：{detail}{suffix}"
-                    )
-                raise RuntimeError(
-                    "存在无法完整放入单页的超长段落，请将该段拆成多个自然段"
+                # 自动拆分过长的 body 块，然后重新测量
+                new_blocks, new_indices = _split_oversized_blocks(
+                    paginated_blocks, paginated_source_indices, available_height, page,
+                    template_html, style, preferred_body_size, document_title,
+                    template_text,
                 )
+                if new_blocks is not None:
+                    paginated_blocks = new_blocks
+                    paginated_source_indices = new_indices
+                    # 重新测量
+                    measurement_html = render_html(
+                        template_html, paginated_blocks, style,
+                        preferred_body_size, document_title, template_text,
+                    )
+                    available_height, block_heights = _measure_blocks(page, measurement_html)
+                    if all(h <= available_height for h in block_heights):
+                        pages = _paginate(paginated_blocks, block_heights, available_height, document_title)
+                        selected_size = preferred_body_size
+                if selected_size is None:
+                    oversized_details: list[str] = []
+                    try:
+                        for i, (block, h) in enumerate(zip(paginated_blocks, block_heights)):
+                            if h > available_height:
+                                oversized_details.append(
+                                    f"「{_block_summary(block, limit=28)}」({h:.0f}px)"
+                                )
+                    except Exception:
+                        oversized_details = []
+                    if oversized_details:
+                        detail = "；".join(oversized_details[:3])
+                        suffix = " 等" if len(oversized_details) > 3 else ""
+                        raise RuntimeError(
+                            f"以下内容块超过单页可用高度"
+                            f"（{available_height:.0f}px），"
+                            f"请将其拆成多个自然段：{detail}{suffix}"
+                        )
+                    raise RuntimeError(
+                        "存在无法完整放入单页的超长段落，"
+                        "请将该段拆成多个自然段"
+                    )
 
             # 最后一页稀疏检测：如果最后一页内容不足可用高度 30%，
             # 尝试从倒数第二页末尾回移 1 个 block，减少留白。

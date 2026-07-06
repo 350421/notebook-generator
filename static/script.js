@@ -2223,7 +2223,14 @@ async function postJson(url, payload) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  const data = await response.json();
+  let data;
+  try {
+    data = await response.json();
+  } catch (_e) {
+    throw new Error(
+      `服务器返回异常（${response.status}），请稍后重试。如果持续出现，请检查 Railway 部署日志。`
+    );
+  }
   if (!response.ok || !data.success) {
     throw new Error(data.error || "操作失败，请稍后重试");
   }

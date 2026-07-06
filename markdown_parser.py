@@ -153,6 +153,59 @@ def _smart_heading_indices(lines: list[str]) -> tuple[int | None, set[int]]:
     return primary_index, subtitle_indices
 
 
+def _split_long_body(text: str, max_chars: int = 280) -> list[str]:
+    """将长正文按优先级逐级拆分：句号 → 分号/逗号 → 固定长度硬切。"""
+    if len(text) <= max_chars:
+        return [text] if text.strip() else []
+
+    # 第 1 级：按句号/问号/感叹号/省略号拆分
+    parts = re.split(r"(?<=[。！？…])", text)
+    parts = [p.strip() for p in parts if p.strip()]
+    if len(parts) > 1:
+        result = _merge_parts(parts, max_chars)
+        if max(len(p) for p in result) <= max_chars * 1.5:
+            return result
+
+    # 第 2 级：按分号拆分
+    parts = re.split(r"(?<=[；;])", text)
+    parts = [p.strip() for p in parts if p.strip()]
+    if len(parts) > 1:
+        result = _merge_parts(parts, max_chars)
+        if max(len(p) for p in result) <= max_chars * 1.5:
+            return result
+
+    # 第 3 级：按逗号/顿号拆分
+    parts = re.split(r"(?<=[，、,])", text)
+    parts = [p.strip() for p in parts if p.strip()]
+    if len(parts) > 1:
+        result = _merge_parts(parts, max_chars)
+        if max(len(p) for p in result) <= max_chars * 1.5:
+            return result
+
+    # 第 4 级：固定长度硬切
+    result = []
+    for i in range(0, len(text), max_chars):
+        chunk = text[i:i + max_chars].strip()
+        if chunk:
+            result.append(chunk)
+    return result
+
+
+def _merge_parts(parts: list[str], target: int) -> list[str]:
+    """将短片段合并到接近 target 字符数。"""
+    result = []
+    buf = ""
+    for part in parts:
+        if len(buf) + len(part) > target and buf:
+            result.append(buf.strip())
+            buf = part
+        else:
+            buf += part
+    if buf.strip():
+        result.append(buf.strip())
+    return result
+
+
 def parse_markdown(markdown_text: str) -> list[Block]:
     """
     将 Markdown 解析为标题、正文、列表、图片和引用内容块。
@@ -190,21 +243,10 @@ def parse_markdown(markdown_text: str) -> list[Block]:
                     if line.strip()
                 )
             elif pending_type == "body":
-                # 长正文按自然段自动拆分，避免单段过长导致分页失败
+                # 长正文自动拆分，避免单段过长导致分页失败
                 combined = "\n".join(pending_lines).strip()
-                if len(combined) > 300:
-                    parts = re.split(r"(?<=[。！？])", combined)
-                    chunk = ""
-                    for part in parts:
-                        if len(chunk) + len(part) > 280 and chunk:
-                            blocks.append({"type": "body", "content": chunk.strip()})
-                            chunk = part
-                        else:
-                            chunk += part
-                    if chunk.strip():
-                        blocks.append({"type": "body", "content": chunk.strip()})
-                else:
-                    blocks.append({"type": "body", "content": combined})
+                for chunk in _split_long_body(combined):
+                    blocks.append({"type": "body", "content": chunk})
             else:
                 blocks.append(
                     {
