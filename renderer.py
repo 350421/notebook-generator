@@ -872,13 +872,19 @@ def _paginate(
 
 
 def _open_chromium(playwright: Any) -> Any:
-    """优先启动 bundled Chromium，缺失时使用系统 Chrome。"""
+    """优先启动 bundled Chromium，添加服务器优化参数。"""
+    launch_args = [
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
+        "--no-first-run",
+        "--no-default-browser-check",
+    ]
     try:
-        return playwright.chromium.launch(headless=True)
+        return playwright.chromium.launch(headless=True, args=launch_args)
     except PlaywrightError as error:
         if "Executable doesn't exist" not in str(error):
             raise
-        return playwright.chromium.launch(channel="chrome", headless=True)
+        return playwright.chromium.launch(channel="chrome", headless=True, args=launch_args)
 
 
 def _block_summary(block: dict[str, str], limit: int = 34) -> str:
